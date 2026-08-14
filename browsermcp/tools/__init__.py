@@ -24,6 +24,7 @@ from .recording import (
     recording_save,
 )
 from .scheduling import schedule_add, schedule_list, schedule_remove
+from .upload import attach_file
 
 __all__ = [
     "chrome_attach",
@@ -35,6 +36,7 @@ __all__ = [
     "scroll",
     "click",
     "type_text",
+    "attach_file",
     "read_page",
     "screenshot",
     "extract",

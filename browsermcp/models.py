@@ -46,6 +46,14 @@ class TypeResult(BaseModel):
     notes: str | None = None
 
 
+class AttachFileResult(BaseModel):
+    field: str
+    files: list[str] = Field(default_factory=list)
+    total_bytes: int = 0
+    ok: bool = True
+    notes: str | None = None
+
+
 class PageReadResult(BaseModel):
     title: str
     url: str

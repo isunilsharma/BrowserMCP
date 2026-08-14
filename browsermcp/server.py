@@ -81,6 +81,7 @@ from .tools.recording import (
     recording_stop_session,
 )
 from .tools.scheduling import schedule_add, schedule_list, schedule_remove
+from .tools.upload import attach_file
 
 _PRIMITIVES = (
     set_skill_context,
@@ -93,6 +94,7 @@ _PRIMITIVES = (
     scroll,
     click,
     type_text,
+    attach_file,
     read_page,
     screenshot,
     extract,

@@ -222,6 +222,29 @@ def extract(
 ```
 Pull structured data from the page matching the given schema. If the schema is simple (1-level dict), uses a deterministic DOM walk. For complex extraction, falls back to a sub-LLM call.
 
+#### `attach_file(field: str, paths: str | list[str], *, confirmed: bool = False, window_id: str | None = None, timeout_s: float = 15.0, frame: str | None = None)`
+```python
+class AttachFileResult(BaseModel):
+    field: str
+    files: list[str]     # basenames only — never full paths
+    total_bytes: int
+    ok: bool = True
+    notes: str | None = None
+```
+Attach local files to an `<input type="file">`. `field` accepts a CSS selector, an element id, or the visible label text; when the page has exactly one file input, that one is used regardless.
+
+**This is the only primitive that moves data off the machine** — the file contents go to whatever origin the page belongs to. Consequently it is gated harder than `click`/`type_text`:
+
+| Guardrail | Behavior |
+|---|---|
+| `confirmed=True` | Always required. There is no read-only/dry-run form. Checked *before* the path is touched, so an unconfirmed call can't be used to probe the filesystem. |
+| Credential directories | Refuses any path crossing `.ssh`, `.aws`, `.gnupg`, `.kube`, `.docker`, `.browsermcp`, keychains |
+| Secret extensions | Refuses `.pem`, `.key`, `.p12`, `.pfx`, `.keychain`, `.kdbx`, `.jks`, `.ppk` |
+| Credential filenames | Refuses `.env`, `credentials`, `id_rsa`, `id_ed25519`, `.netrc` |
+| Size cap | `MAX_UPLOAD_BYTES` = 25 MB; empty files also refused |
+
+Only basenames are returned and logged — never the resolved path, per the logging rules in `CLAUDE.md`.
+
 #### `screenshot(*, full_page: bool = False, window_id: str | None = None)`
 #### `wait_for(condition: str, *, timeout_s: int = 30, window_id: str | None = None)`
 #### `scroll(direction: Literal["up","down","top","bottom"], amount: int = 500, window_id: str | None = None)`
