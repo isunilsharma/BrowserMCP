@@ -153,7 +153,7 @@ else
   fi
   c_yellow "Creating venv via uv sync (this can take 1-2 min on first run)..."
   ( cd "$REPO_FOR_VENV" && uv sync ) || {
-    c_red "✗ uv sync failed. Check VPN (internal browser-use fork requires it) and re-run."
+    c_red "✗ uv sync failed. Check that pypi.org and files.pythonhosted.org are reachable (proxy/VPN if your network needs one), then re-run."
     exit 1
   }
   c_green "✓ venv ready at $REPO_FOR_VENV/.venv"

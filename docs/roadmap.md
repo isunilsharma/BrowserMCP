@@ -38,7 +38,7 @@
 
 **Goal:** Sunil can run `/powerbi-scan` against a real Power BI report from his own Claude Code.
 
-**Status:** ✅ Complete (commits `924af50`..`878859f` — scaffold through the `chrome_find_or_open_window` follow-up).
+**Status:** ✅ Complete (scaffold through the `chrome_find_or_open_window` follow-up).
 
 **Scope:**
 - MCP server skeleton in `browsermcp/server.py`
@@ -314,22 +314,22 @@ Major decisions and when they were made — to be appended over time.
 
 ## Recent activity
 
-Last 15 commits (most recent first) — quick "what shipped when" reference:
+Quick "what shipped when" reference, most recent first. The repo's history was
+squashed into a single initial commit, so these are descriptions rather than
+commit links:
 
-| Commit | Subject |
-|---|---|
-| `6987b37` | Allow outlook.cloud.microsoft + outlook.office.com in default allowlist |
-| `0cf640e` | Phase 2 fix + Phase 3: promote-flow + create-flow + record-flow scaffold |
-| `995f496` | Phase 2: meta-skills, team skills, integration tests, getting-started |
-| `878859f` | Add chrome_find_or_open_window — reuse existing signed-in tabs |
-| `38afcb2` | Allow Microsoft 365 / Power BI domains in default allowlist |
-| `5ba3abc` | Make Playwright the primary CDP client; require dedicated profile |
-| `cb35562` | tests: unit-test extraction.py flat-schema helpers |
-| `da8a667` | docs: update path references from mcp/ to browsermcp/ |
-| `924af50` | Phase 1 scaffold: MCP server + 5 browser primitives + /powerbi-scan |
-| `2b7976f` | Add pyproject.toml — depend on internal browser-use fork |
-| `5e2b072` | Add team-onboarding skill + manual install path |
-| `956f301` | Initial design docs for BrowserMCP |
+- Allow outlook.cloud.microsoft + outlook.office.com in default allowlist
+- Phase 2 fix + Phase 3: promote-flow + create-flow + record-flow scaffold
+- Phase 2: meta-skills, team skills, integration tests, getting-started
+- Add `chrome_find_or_open_window` — reuse existing signed-in tabs
+- Allow Microsoft 365 / Power BI domains in default allowlist
+- Make Playwright the primary CDP client; require dedicated profile
+- tests: unit-test `extraction.py` flat-schema helpers
+- docs: update path references from `mcp/` to `browsermcp/`
+- Phase 1 scaffold: MCP server + 5 browser primitives + `/powerbi-scan`
+- Add `pyproject.toml` — pin `browser-use` and the CDP client
+- Add team-onboarding skill + manual install path
+- Initial design docs for BrowserMCP
 
 ---
 

@@ -44,10 +44,11 @@ the virtualenv is created.
 | Python 3.11+ | ships with macOS | installed by `uv` |
 | Node.js LTS | optional | required (`winget install OpenJS.NodeJS.LTS`) |
 | Google Chrome | installed | installed |
-| **Corporate VPN** | **on** | **on** |
+| **Network access to PyPI** | **required** | **required** |
 
-VPN is not optional: `pyproject.toml` pulls the internal `browser-use` fork from
-`github.com`, and `uv sync` fails without it.
+`uv sync` resolves every dependency from PyPI (`pypi.org` and
+`files.pythonhosted.org`) and fails if it can't reach them. If your network
+needs a proxy or VPN to get there, connect first.
 
 **Optional, but the installer will ask for them** — generate first if you want
 the Jira/Confluence/GitHub MCP servers wired up too:
@@ -189,7 +190,7 @@ subsequent tool call fails with `-32602` until you reconnect the server.
 |---|---|
 | `chrome_attach failed: ECONNREFUSED 127.0.0.1:9222` | The agent Chrome isn't running — re-run `chrome-shim.sh`. |
 | `Looks like the agent's Chrome profile isn't signed in` | Flip to the agent Chrome window, complete SSO, re-run. |
-| `uv sync failed` | You're off VPN. The internal `browser-use` fork is unreachable without it. |
+| `uv sync failed` | Can't reach PyPI. Check that `pypi.org` and `files.pythonhosted.org` resolve (proxy/VPN if your network needs one), then re-run. |
 | `host not allowed: <domain>` | Guardrail — domain isn't on the corporate allowlist. Ask Sunil to add it. |
 | `confirmation_required` on a write | By design. Re-invoke with `confirm=true`, or tell Claude "yes, proceed". |
 | Agent window won't open | Another Chrome is locking the profile dir. Quit all Chrome (`Cmd-Q`), re-run the shim. |

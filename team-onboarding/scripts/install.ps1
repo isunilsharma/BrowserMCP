@@ -167,7 +167,7 @@ if (Test-Path $VenvPython) {
   Push-Location $RepoRoot
   try {
     & uv sync
-    if ($LASTEXITCODE -ne 0) { Write-Err2 "uv sync failed (exit $LASTEXITCODE). Check VPN and re-run."; exit 1 }
+    if ($LASTEXITCODE -ne 0) { Write-Err2 "uv sync failed (exit $LASTEXITCODE). Check that pypi.org and files.pythonhosted.org are reachable (proxy/VPN if your network needs one), then re-run."; exit 1 }
   } finally { Pop-Location }
   Write-Ok "venv ready at $RepoRoot\.venv"
 }
