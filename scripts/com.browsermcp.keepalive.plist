@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  com.browsermcp.keepalive.plist
+
+  launchd agent that runs scripts/keepalive.py every 30 minutes to keep
+  BrowserMCP-tracked tabs' sessions warm (Power BI, Confluence, Outlook, etc.).
+
+  Install:
+    bash scripts/install-keepalive.sh
+
+  Or manually:
+    cp scripts/com.browsermcp.keepalive.plist ~/Library/LaunchAgents/
+    launchctl load ~/Library/LaunchAgents/com.browsermcp.keepalive.plist
+
+  IMPORTANT: install-keepalive.sh rewrites BROWSERMCP_REPO and the working
+  directory to the real repo path on the user's machine — the values below
+  are placeholders that the installer substitutes via sed.
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.browsermcp.keepalive</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>-lc</string>
+        <string>cd "${BROWSERMCP_REPO}" &amp;&amp; uv run python scripts/keepalive.py</string>
+    </array>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>BROWSERMCP_REPO</key>
+        <string>__BROWSERMCP_REPO__</string>
+        <key>PATH</key>
+        <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+    </dict>
+
+    <key>WorkingDirectory</key>
+    <string>__BROWSERMCP_REPO__</string>
+
+    <key>StartInterval</key>
+    <integer>1800</integer>
+
+    <key>RunAtLoad</key>
+    <false/>
+
+    <key>StandardOutPath</key>
+    <string>__HOME__/.browsermcp/keepalive.out.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>__HOME__/.browsermcp/keepalive.err.log</string>
+</dict>
+</plist>

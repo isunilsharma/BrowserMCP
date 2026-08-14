@@ -1,0 +1,18 @@
+# Streamlit config for BrowserMCP web UI.
+# CRITICAL: address is locked to 127.0.0.1 so the UI is unreachable from
+# anyone else on the network (including same-Wi-Fi or VPN). The UI exposes
+# redacted-but-still-sensitive run logs and recordings; it ships with no auth
+# and must NEVER be exposed beyond the localhost interface.
+#
+# To run: cd <repo> && streamlit run web/app.py
+# To verify binding: `lsof -iTCP:8501 -sTCP:LISTEN` should show 127.0.0.1 only.
+
+[server]
+address = "127.0.0.1"     # local-only — do not change to 0.0.0.0
+port = 8501
+headless = true            # don't auto-open browser; user opens http://localhost:8501 themselves
+enableCORS = true          # explicit (default but pinned for clarity)
+enableXsrfProtection = true
+
+[browser]
+gatherUsageStats = false   # don't phone home to Streamlit's telemetry endpoint

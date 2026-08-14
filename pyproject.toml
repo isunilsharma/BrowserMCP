@@ -1,0 +1,99 @@
+[project]
+name = "browsermcp"
+version = "0.1.0"
+description = "Internal MCP server wrapping browser-use, drivable from Claude Code."
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [
+    { name = "Sunil Sharma" },
+]
+license = { text = "MIT" }
+keywords = ["mcp", "browser-automation", "claude-code", "internal"]
+
+dependencies = [
+    # Upstream browser-use. Telemetry is disabled at runtime via the
+    # ANONYMIZED_TELEMETRY / BROWSER_USE_TELEMETRY_DISABLED env vars the
+    # launcher sets — see team-onboarding/claude_desktop_config.template.json.
+    "browser-use>=0.13.2",
+
+    # MCP SDK (Anthropic's reference Python implementation).
+    "mcp>=0.5",
+
+    # CDP client used as the primary path in state.py. browser-use's own client
+    # has a WebSocket-stability regression with Chrome 149+; Playwright's CDP
+    # client is unaffected. Pinned to the same version range browser-use depends on.
+    "playwright>=1.45",
+
+    # Standard runtime
+    "pydantic>=2.7",
+    "typer>=0.12",
+    "rich>=13.7",            # pretty CLI / progress output
+    "tomli-w>=1.0",          # TOML write-side (Python 3.11+ ships tomllib for reads)
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "pytest-mock>=3.12",
+    "ruff>=0.6",
+    "mypy>=1.10",
+    # Powers the integration-test fixture site at tests/fixtures/site/app.py;
+    # the conftest fixture imports it via pytest.importorskip so unit-only
+    # runs don't need it, but `pytest -m integration` does.
+    "flask>=3.0",
+    # Safety net: kills any test that runs past the [tool.pytest.ini_options]
+    # `timeout` value below. Belt-and-braces with the per-primitive timeouts
+    # in browsermcp.tools so a Chrome 149+ CDP hang can't lock CI forever.
+    "pytest-timeout>=2.0",
+]
+# Streamlit dashboard at web/app.py. Install with `uv sync --extra web`,
+# then run `uv run streamlit run web/app.py`. See web/README.md.
+web = ["streamlit>=1.30"]
+
+[project.scripts]
+# Entry point for the MCP server (Phase 1, once mcp/server.py exists).
+browsermcp = "browsermcp.server:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["browsermcp"]
+
+[tool.hatch.metadata]
+# Lets hatch accept direct (`pkg @ url`) references in [project.dependencies],
+# which is how a local fork of browser-use would be pinned. Equivalent to
+# `pip install`'s default behaviour.
+allow-direct-references = true
+
+# ───── tool configs ───────────────────────────────────────────────
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "W"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+# Default `pytest` runs unit tests only. Integration and e2e require a real
+# browser / network and are opt-in via `pytest -m integration` or `-m e2e`.
+addopts = "-m 'not integration and not e2e'"
+# Hard upper bound on any single test. The per-primitive timeouts in
+# browsermcp.tools are 10–30s, so 60s is a generous backstop for slow
+# integration cases that compose multiple primitives.
+timeout = 60
+markers = [
+    "integration: tests that require a running Chrome (slow)",
+    "e2e: end-to-end tests requiring real Chrome + signed-in sessions (manual)",
+]
+
+[tool.uv]
+# Build this project as a package (rather than treating it as a bare
+# virtualenv target). This is also where an internal Artifactory mirror
+# would be swapped in as the primary index later (Phase 3+).
+package = true

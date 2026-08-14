@@ -1,0 +1,12 @@
+# This directory holds the "universal" skill set — skills every teammate gets
+# regardless of which --team flag they pass to install.sh.
+#
+# It's intentionally empty for now. The current 8 shipped skills still live
+# one level up at team-skills/<name>/SKILL.md (the legacy flat layout) and are
+# treated as universal until they migrate here. See:
+#
+#   • docs/phase5-multi-team.md  — three layer model, install behavior
+#   • team-skills/REGISTRY.md    — which skills exist and their "primary team"
+#
+# To migrate a flat skill into this bucket, move its directory:
+#   git mv team-skills/<name>/  team-skills/all/<name>/

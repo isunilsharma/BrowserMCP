@@ -1,0 +1,55 @@
+{
+  "_comment": "Template for Claude Desktop MCP config. Replace {{...}} placeholders before use. Lives at: ~/Library/Application Support/Claude/claude_desktop_config.json",
+  "mcpServers": {
+    "github": {
+      "command": "{{HOME}}/.local/bin/github-mcp-server",
+      "args": [
+        "stdio",
+        "--gh-host",
+        "https://github.com"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "{{GITHUB_PAT}}"
+      }
+    },
+    "jira": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@atlassian-dc-mcp/jira"
+      ],
+      "env": {
+        "JIRA_HOST": "jira.example.com",
+        "JIRA_API_TOKEN": "{{JIRA_PAT}}"
+      }
+    },
+    "confluence": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@atlassian-dc-mcp/confluence"
+      ],
+      "env": {
+        "CONFLUENCE_HOST": "confluence.example.com",
+        "CONFLUENCE_API_TOKEN": "{{CONFLUENCE_PAT}}"
+      }
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "{{HOME}}"
+      ]
+    },
+    "browsermcp": {
+      "command": "{{LAUNCHER_PATH}}",
+      "args": [],
+      "env": {
+        "ANONYMIZED_TELEMETRY": "false",
+        "BROWSER_USE_TELEMETRY_DISABLED": "1",
+        "BROWSERMCP_WATCH": "0"
+      }
+    }
+  }
+}

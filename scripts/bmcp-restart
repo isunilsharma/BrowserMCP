@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+# Trigger the BrowserMCP server's file-watcher to re-exec the process.
+# Useful in dev when you've edited a skill or browsermcp/*.py file and want
+# the running MCP server to pick up the change without restarting Claude Code.
+#
+# Requires BROWSERMCP_WATCH=1 in the MCP server's env (set by install.sh).
+# Without that, this still touches the file but the server won't re-exec.
+
+set -euo pipefail
+
+# Resolve the repo root from the location of this script (handles symlinks).
+SCRIPT_PATH="$(readlink -f "${BASH_SOURCE[0]}" 2>/dev/null || python3 -c "import os,sys; print(os.path.realpath(sys.argv[1]))" "${BASH_SOURCE[0]}")"
+REPO_ROOT="$(cd "$(dirname "$SCRIPT_PATH")/.." && pwd)"
+
+TARGET="$REPO_ROOT/browsermcp/state.py"
+
+if [[ ! -f "$TARGET" ]]; then
+  echo "bmcp-restart: cannot find $TARGET" >&2
+  echo "Is the BrowserMCP repo intact at $REPO_ROOT?" >&2
+  exit 1
+fi
+
+touch "$TARGET"
+echo "browsermcp: restart triggered (watcher will re-exec within ~1s)"
+
+# TCC hint: if the repo lives under ~/Desktop, ~/Documents, or ~/Downloads,
+# macOS may block Claude Code's Bash tool from re-launching the venv Python
+# after the re-exec, even though the server process itself keeps running.
+# Symptom: subsequent Bash-invoked Python commands fail with EPERM. Fix:
+# grant Claude Code Full Disk Access, or move the repo out of those folders
+# (see docs/getting-started.md § 0).
+case "$REPO_ROOT" in
+  "$HOME/Desktop"/*|"$HOME/Documents"/*|"$HOME/Downloads"/*)
+    echo ""
+    echo "  ⚠ Repo is under a macOS TCC-protected folder ($REPO_ROOT)."
+    echo "    If Claude Code's Bash tool starts hitting 'Operation not permitted'"
+    echo "    after a restart, grant Claude Code Full Disk Access:"
+    echo "    System Settings → Privacy & Security → Full Disk Access"
+    echo "    or move the repo to ~/code/BrowserMCP (see docs/getting-started.md § 0)."
+    ;;
+esac
