@@ -15,9 +15,15 @@ from ..state import (
 )
 
 
-async def chrome_attach(port: int = 9222) -> AttachResult:
-    """Attach to a running Chrome over CDP at the given debug port."""
-    browser = await get_or_attach(port)
+async def chrome_attach(port: int = 9222, force: bool = False) -> AttachResult:
+    """Attach to a running Chrome over CDP at the given debug port.
+
+    A cached connection that has since died is detected and replaced
+    automatically. Pass force=True to tear down and re-attach even when the
+    cached handle still looks healthy — the escape hatch for a half-dead
+    connection that reports itself as connected.
+    """
+    browser = await get_or_attach(port, force=force)
 
     profile_name = _profile_name(browser)
     context_id = _context_id(browser)
